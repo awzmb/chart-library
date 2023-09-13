@@ -1,0 +1,61 @@
+# Default values for generic-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+nameOverride: code
+
+replicaCount: 1
+
+image:
+  repository: ghcr.io/awzmb/devbox
+  tag: "main"
+  pullPolicy: IfNotPresent
+
+#imagePullSecrets: []
+#nameOverride: ""
+#fullnameOverride: ""
+
+persistentVolumeClaim:
+  enabled: true
+  name: code-storage
+  storageSize: 10Gi
+  storageClassName: longhorn
+
+serviceAccount:
+  create: true
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext:
+  capabilities:
+    add: ["NET_ADMIN"]
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+     cert-manager.io/cluster-issuer: letsencrypt-prod
+     nginx.ingress.kubernetes.io/ssl-redirect: "true"
+     nginx.ingress.kubernetes.io/limit-burst-multiplier: "5"
+     nginx.ingress.kubernetes.io/limit-rps: "60"
+  hosts:
+    - host: hello.awzm.sh
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: letsencrypt-hello-world
+      hosts:
+        - hello.awzm.sh
+
+resources:
+   limits:
+     cpu: 2
+     memory: 4GB
+
+autoscaling:
+  enabled: false
