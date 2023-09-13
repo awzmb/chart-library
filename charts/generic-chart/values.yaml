@@ -1,9 +1,9 @@
 # Default values for generic-chart.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-nameOverride: code
 
 replicaCount: 1
+nameOverride: code
 
 image:
   repository: ghcr.io/awzmb/devbox
