@@ -45,9 +45,9 @@ spec:
             httpGet:
               path: /
               port: http
-      {{- if (eq .Values.volumes true) }}
+      {{- if or (.Values.volumes) (eq .Values.persistentVolumeClaim.enabled true) }}
         volumes:
-          {{- if (eq .Values.persistentVolumeClaim true) }}
+          {{- if (eq .Values.persistentVolumeClaim.enabled true) }}
         - name: {{ .Values.persistentVolumeClaim.name }}-data
           persistentVolumeClaim:
             {{- if .Values.persistentVolumeClaim.name }}
