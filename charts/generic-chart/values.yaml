@@ -16,9 +16,11 @@ image:
 
 persistentVolumeClaim:
   enabled: true
-  name: code-storage
+  name: storage
   storageSize: 10Gi
   storageClassName: longhorn
+
+#volumes: {}
 
 serviceAccount:
   create: true

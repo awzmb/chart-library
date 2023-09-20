@@ -31,7 +31,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default "latest" }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
@@ -45,22 +45,22 @@ spec:
             httpGet:
               path: /
               port: http
-      {{- if or (.Values.volumes) (eq .Values.persistentVolumeClaim.enabled true) }}
-        volumes:
+        {{- if or (.Values.volumes) (eq .Values.persistentVolumeClaim.enabled true) }}
+          volumes:
           {{- if (eq .Values.persistentVolumeClaim.enabled true) }}
-        - name: {{ .Values.persistentVolumeClaim.name }}-data
-          persistentVolumeClaim:
-            {{- if .Values.persistentVolumeClaim.name }}
-            claimName: {{ .Values.persistentVolumeClaim.name }}
+            - name: {{ .Values.persistentVolumeClaim.name }}-data
+              persistentVolumeClaim:
+                {{- if .Values.persistentVolumeClaim.name }}
+                claimName: {{ .Values.persistentVolumeClaim.name }}
+                {{- end }}
+              {{- end }}
+            {{- if .Values.volumes }}
+            {{- range $key, $value := .Values.volumes  }}
+            - name: {{ $key  }}
+    {{ include "generic-chart.tplvalues.render" ( dict "value" $value "context" $ ) | indent 8 }}
             {{- end }}
           {{- end }}
-        {{- if .Values.volumes }}
-        {{- range $key, $value := .Values.volumes  }}
-        - name: {{ $key  }}
-{{ include "generic-chart.tplvalues.render" ( dict "value" $value "context" $ ) | indent 8 }}
         {{- end }}
-        {{- end }}
-      {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
