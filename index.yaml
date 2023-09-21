@@ -2,6 +2,15 @@ apiVersion: v1
 entries:
   generic-chart:
   - apiVersion: v2
+    created: "2023-09-21T17:00:12.084345741Z"
+    description: A Helm chart for Kubernetes
+    digest: 0f2d83389c510317f4c6922a03202a4819b1a57a13f29e20f410cc5c2ee24b45
+    name: generic-chart
+    type: application
+    urls:
+    - https://github.com/awzmb/chart-library/releases/download/generic-chart-0.2.3/generic-chart-0.2.3.tgz
+    version: 0.2.3
+  - apiVersion: v2
     created: "2023-09-21T07:51:45.600529512Z"
     description: A Helm chart for Kubernetes
     digest: 79ef64ca8d820029d7532462882396539e582b54ca50396b093a6ef6e096904d
@@ -38,4 +47,4 @@ entries:
     urls:
     - https://github.com/awzmb/chart-library/releases/download/generic-chart-0.1.0/generic-chart-0.1.0.tgz
     version: 0.1.0
-generated: "2023-09-21T07:51:45.600565314Z"
+generated: "2023-09-21T17:00:12.084363441Z"
