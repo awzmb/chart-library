@@ -1,0 +1,16 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "{{ .Chart.Name }}-home"
+  namespace: {{ .Release.Namespace }}
+  labels:
+  {{- include "codebox.labels" . | nindent 4 }}
+  annotations:
+{{ toYaml .Values.persistentVolumeClaim.annotations | indent 4 }}
+spec:
+  accessModes: "ReadWriteMany"
+  resources:
+    requests:
+      storage: {{ .Values.persistentVolumeClaim.storageSizeHome | quote }}
+  storageClassName: "{{ .Values.persistentVolumeClaim.storageClass }}"
+  volumeName: "{{ .Chart.Name }}-home"

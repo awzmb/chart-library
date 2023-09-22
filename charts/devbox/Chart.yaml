@@ -1,0 +1,5 @@
+apiVersion: v2
+name: codebox
+description: Chart for Codebox (code-server on alpine) deployment
+type: application
+version: 0.1.0

@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "generic-chart.fullname" . }}
+  name: {{ include "codebox.fullname" . }}
   labels:
-    {{- include "generic-chart.labels" . | nindent 4 }}
+    {{- include "codebox.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "generic-chart.selectorLabels" . | nindent 6 }}
+      {{- include "codebox.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,13 +18,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "generic-chart.selectorLabels" . | nindent 8 }}
+        {{- include "codebox.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "generic-chart.serviceAccountName" . }}
+      serviceAccountName: {{ include "codebox.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -33,6 +33,11 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default "latest" }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: {{ .Chart.Name }}-home-data
+              mountPath: /root
+            - name: {{ .Chart.Name }}-config-data
+              mountPath: /config
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
@@ -45,26 +50,13 @@ spec:
             httpGet:
               path: /
               port: http
-    {{- if or (.Values.volumes) (eq .Values.persistentVolumeClaim.enabled true) }}
       volumes:
-      {{- if (eq .Values.persistentVolumeClaim.enabled true) }}
-        - name: {{ .Values.persistentVolumeClaim.name }}-data
+        - name: {{ .Chart.Name }}-home-data
           persistentVolumeClaim:
-            {{- if .Values.persistentVolumeClaim.name }}
-            claimName: {{ .Values.persistentVolumeClaim.name }}
-            {{- end }}
-          {{- end }}
-        {{- if .Values.volumes }}
-        {{- range $key, $value := .Values.volumes  }}
-        - name: {{ $key  }}
-{{ include "generic-chart.tplvalues.render" ( dict "value" $value "context" $ ) | indent 8 }}
-        {{- end }}
-      {{- end }}
-    {{- end }}
-      {{- if .Values.resources }}
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-      {{- end }}
+            claimName: {{ .Chart.Name }}-home
+        - name: {{ .Chart.Name }}-config-data
+          persistentVolumeClaim:
+            claimName: {{ .Chart.Name }}-config
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
