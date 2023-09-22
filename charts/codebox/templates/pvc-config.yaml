@@ -5,12 +5,10 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
   {{- include "codebox.labels" . | nindent 4 }}
-  annotations:
-{{ toYaml .Values.persistentVolumeClaim.annotations | indent 4 }}
 spec:
-  accessModes: "ReadWriteMany"
+  accessModes:
+    - ReadWriteOnce
   resources:
     requests:
       storage: {{ .Values.persistentVolumeClaim.storageSizeConfig | quote }}
   storageClassName: "{{ .Values.persistentVolumeClaim.storageClass }}"
-  volumeName: "{{ .Chart.Name }}-config"

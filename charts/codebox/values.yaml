@@ -3,7 +3,7 @@ replicaCount: 1
 image:
   repository: ghcr.io/awzmb/devbox
   tag: "main"
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 imagePullSecrets: []
 
